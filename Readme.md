@@ -29,6 +29,9 @@ There's just one problem: by holding the two lists up side by side (your puzzle 
 that the lists aren't very similar. Maybe you can help The Historians reconcile their lists?
 
 For example:
+
+|   |  |
+| ----------- | ----------- |
 | 3 |  4 |
 | 4 |  3 |
 | 2 |  5 |
