@@ -1,9 +1,11 @@
 use std::fs::read_to_string;
+use std::collections::HashMap;
 
 const FILE1PATH: &str = "input\\input1.txt";
 
 fn main() {
     part1();
+    part2();
 }
 
 fn part1(){
@@ -12,6 +14,13 @@ fn part1(){
     let sorted_lists = get_sorted_lists(file1_content);
     let result_sum = sum_distances(sorted_lists.0, sorted_lists.1);
     println!("Sum: {:?}", { result_sum });
+}
+
+fn part2(){
+    let file1_content = get_file_content(FILE1PATH);
+    let sorted_lists = get_sorted_lists(file1_content);
+    let result_similarity = calc_similarity_score(sorted_lists.0, sorted_lists.1);
+    println!("Similarity: {:?}", { result_similarity });
 }
 
 fn get_file_content(path: &str) -> String{
@@ -51,6 +60,19 @@ fn sum_distances(vec1 : Vec<i32>, vec2 : Vec<i32>) -> i32{
     distance_list.iter().sum()
 }
 
+fn calc_similarity_score(vec1 : Vec<i32>, vec2 : Vec<i32>) -> i32{
+    let mut result = 0;
+    let mut hashmap = vec2.iter().map(|num| (*num, 0)).collect::<HashMap<_,_>>();
+    for num in vec2 {
+        *hashmap.entry(num).or_insert(0) += 1;
+    }
+
+    for number in vec1 {
+        result += number * (hashmap.get(&number).unwrap_or(&0));
+    }
+    result
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -64,7 +86,7 @@ mod tests {
 
         let result = sum_distances(first_list, second_list);
 
-        assert_eq!(result, 11);
+        assert_eq!(11, result);
     }
 
     #[test]
@@ -77,7 +99,17 @@ mod tests {
 
         let result = get_sorted_lists(test_content);
 
-        assert_eq!(result.0, first_list);
-        assert_eq!(result.1, second_list);
+        assert_eq!(first_list, result.0);
+        assert_eq!(second_list, result.1);
+    }
+
+    #[test]
+    fn calc_similarity_score_test() {
+        let first_list = vec![3, 4, 2, 1, 3, 3];
+        let second_list = vec![4, 3, 5, 3, 9, 3];
+
+        let result = calc_similarity_score(first_list, second_list);
+
+        assert_eq!(31, result);
     }
 }
