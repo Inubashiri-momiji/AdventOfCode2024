@@ -1,54 +1,15 @@
-use std::fs::read_to_string;
 use std::collections::HashMap;
+use utilities::sort_lists;
 
-const FILE1PATH: &str = "input\\input1.txt";
-
-fn main() {
-    let file1_content = get_file_content(FILE1PATH);
-    let content = get_lists_file_content(file1_content);
-    part1(content.clone());
-    part2(content);
-}
-
-fn part1(content: (Vec<i32>, Vec<i32>)){
+pub fn part1(content: (Vec<i32>, Vec<i32>)){
     let sorted_list = sort_lists(content);
     let result_sum = sum_distances(sorted_list.0, sorted_list.1);
     println!("Sum: {:?}", { result_sum });
 }
 
-fn part2(sorted_lists: (Vec<i32>, Vec<i32>)){
+pub fn part2(sorted_lists: (Vec<i32>, Vec<i32>)){
     let result_similarity = calc_similarity_score(sorted_lists.0, sorted_lists.1);
     println!("Similarity: {:?}", { result_similarity });
-}
-
-fn get_file_content(path: &str) -> String{
-    read_to_string(path).unwrap()
-}
-
-fn get_lists_file_content(file: String)-> (Vec<i32>, Vec<i32>){
-    let split_list_by_whitespace = file.split_whitespace().collect::<Vec<&str>>();
-    let capacity = split_list_by_whitespace.len() / 2;
-    let mut sorted_list1 : Vec<i32> = Vec::with_capacity(capacity);
-    let mut sorted_list2 : Vec<i32> = Vec::with_capacity(capacity);
-
-    for (index, content) in split_list_by_whitespace.iter().enumerate(){
-        let parsed_content : i32 = content.parse().unwrap();
-        if index % 2 == 0{
-            sorted_list1.push(parsed_content);
-        }
-        else {
-            sorted_list2.push(parsed_content);
-        }
-    }
-
-    (sorted_list1, sorted_list2)
-}
-
-fn sort_lists(pair: (Vec<i32>, Vec<i32>)) -> (Vec<i32>, Vec<i32>){
-    let mut sort_list = pair.clone();
-    sort_list.0.sort();
-    sort_list.1.sort();
-    sort_list
 }
 
 fn sum_distances(vec1 : Vec<i32>, vec2 : Vec<i32>) -> i32{
@@ -91,18 +52,6 @@ mod tests {
         let result = sum_distances(first_list, second_list);
 
         assert_eq!(11, result);
-    }
-
-    #[test]
-    fn get_lists_file_content_test() {
-        let test_content: String = "3 4 4 3 2 5 1 3 3 9 3 3".to_string();
-        let first_list = vec![3, 4, 2, 1, 3, 3];
-        let second_list = vec![4, 3, 5, 3, 9, 3];
-
-        let result = get_lists_file_content(test_content);
-
-        assert_eq!(first_list, result.0);
-        assert_eq!(second_list, result.1);
     }
 
     #[test]
